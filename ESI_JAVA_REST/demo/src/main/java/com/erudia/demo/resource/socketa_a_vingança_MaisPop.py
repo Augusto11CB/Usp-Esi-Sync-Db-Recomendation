@@ -1,15 +1,23 @@
 import socket
 from time import*
 from threading import Thread
+from Interface import Interface
 
-def threadJob(con ):
+
+def converter(lista_de_id):
+    string_de_ids = ""
+    for id in lista_de_id:
+        string_de_ids = string_de_ids + "," + id
+    return string_de_ids
+
+def threadJob(con):
+    myInterface = Interface()
     recebe = con.recv (1024)
-    print ("mensagem recebida: " + recebe.decode ())
-    sleep(5);
-    con.send (("resposta ao metodo"+recebe.decode()).encode ())
+    numero_de_resultados = recebe.decode()
+    lista_de_id = myInterface.devolveRecomendacaoPaginaInicial(int(numero_de_resultados))
+    string_de_ids = converter(lista_de_id)
+    con.send(string_de_ids.encode())
 
-
-    pass
 
 cont=0;
 while True :

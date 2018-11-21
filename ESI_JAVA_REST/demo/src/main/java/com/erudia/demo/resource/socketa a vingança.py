@@ -1,15 +1,39 @@
 import socket
-from time import*
+from time import *
+from decimal import Decimal
 from threading import Thread
+from Interface import Interface
+from Busca import Busca
 
-def threadJob(con ):
+def converter(lista_de_id):
+    string_de_ids = ""
+    for id in lista_de_id:
+        string_de_ids = string_de_ids + "," + id
+    return string_de_ids
+
+def parsear(entrada_url):
+    dicio_de_entradas = entrada_url.split(",")
+    return dicio_de_entradas
+
+def threadJob(con):
+    
     recebe = con.recv (1024)
-    print ("mensagem recebida: " + recebe.decode ())
-    sleep(5);
-    con.send (("resposta ao metodo"+recebe.decode()).encode ())
+    entradas_da_url = recebe.decode()
+    dicio_de_entradas = parsear(entradas_da_url)
 
+    myInterface = Interface()
+    b = Busca()
+# b.atribui_ordenacao('preco')
+    b.atribui_busca(dicio_de_entradas[0])
+    b.atribui_categoria(dicio_de_entradas[1])
+    b.atribui_id(int(dicio_de_entradas[2]))
+    b.atribui_valor_maximo(Decimal(dicio_de_entradas[3]))
+    b.atribui_valor_minimo(Decimal(dicio_de_entradas[4]))
 
-    pass
+    lista_de_id = myInterface.busque(b)
+
+    string_de_ids = converter(lista_de_id)
+    con.send(string_de_ids.encode())
 
 cont=0;
 while True :
