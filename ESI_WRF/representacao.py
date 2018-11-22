@@ -8,7 +8,8 @@ from Singleton import Singleton
 class Representacao:
     global model
     def __init__(self):
-        self.model = KeyedVectors.load_word2vec_format('C:\\Users\\AsusAugusto\\Documents\\ESI_SYNC_DB_RECOMENDATION\\ESI_WRF\\resourcesToSearch\\cbow_s50.txt', unicode_errors="ignore")
+        self.model = KeyedVectors.load_word2vec_format('/home/maxtelll/Documents/USP/sextoSemestre/esi/projeto/cbow_s50.txt',
+                                          unicode_errors="ignore")
         self.model = self.model.wv
         self.model.init_sims(replace=True)
 

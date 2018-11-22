@@ -1,6 +1,11 @@
 from sklearn.neighbors import NearestNeighbors
 X = [[0,0], [1,1], [5,5], [-2,-2], [10,10]]
 Y = [[-1,-1],[6,6]]
+
+import sys
+sys.path.append('/home/maxtelll/PycharmProjects/ic/facets')
+
+
 # print(X)
 # nn = NearestNeighbors(2, metric='euclidean', algorithm='brute').fit(X)
 # d,i = nn.kneighbors(Y)
@@ -88,88 +93,89 @@ from bd_acesso_busca_recomendacoes import AcessaBD
 #     print(len(s))
 
 # print(a.busque_n_relacionados(5,40))
-# insercoes = []
-# i1 = {
-#     "categoria_log": "camiseta",
-#     "id_log": 8,
-#     "id_produto":1008,
-#     "nome": "camiseta branca regata",
-#     "preco": 99.95,
-#     "tags_log": [
-#       "camiseta","estilosu", "genuino"
-#     ],
-#     "type_log": "INSERT"
-#   }
-# insercoes.append(i1)
-# i2 = {
-#     "categoria_log": "calça",
-#     "id_log": 8,
-#     "id_produto":1006,
-#     "nome": "calça jeans",
-#     "preco": 120.00,
-#     "tags_log": [
-#       "calça","moda", "feminina","nova"
-#     ],
-#     "type_log": "INSERT"
-#   }
-# insercoes.append(i2)
-#
-# i3 = {
-#     "categoria_log": "calça",
-#     "id_log": 8,
-#     "id_produto":1007,
-#     "nome": "calça social",
-#     "preco": 99.95,
-#     "tags_log": [
-#       "calça social","escritório", "masculina","preta"
-#     ],
-#     "type_log": "INSERT"
-#   }
-# insercoes.append(i3)
+insercoes = []
+i1 = {
+    "categoria_log": "camiseta",
+    "id_log": 8,
+    "id_produto":1008,
+    "nome": "camiseta branca regata",
+    "preco": 99.95,
+    "tags_log": [
+      "camiseta","estilosu", "genuino"
+    ],
+    "type_log": "INSERT"
+  }
+insercoes.append(i1)
+i2 = {
+    "categoria_log": "calça",
+    "id_log": 8,
+    "id_produto":1006,
+    "nome": "calça jeans",
+    "preco": 120.00,
+    "tags_log": [
+      "calça","moda", "feminina","nova"
+    ],
+    "type_log": "INSERT"
+  }
+insercoes.append(i2)
+
+i3 = {
+    "categoria_log": "calça",
+    "id_log": 8,
+    "id_produto":1007,
+    "nome": "calça social",
+    "preco": 99.95,
+    "tags_log": [
+      "calça social","escritório", "masculina","preta"
+    ],
+    "type_log": "INSERT"
+  }
+insercoes.append(i3)
 
 atualizacoes = []
 #  120 | 16 | carteira de couro preta | acessórios | 21.44, camiseta, verão, escritório
-# a1 = {
-#     "categoria_log": "acessórios",
-#     "id_log": 8,
-#     "id_produto":120,
-#     "nome": "carteira de couro decorada",
-#     "preco": 50.00,
-#     "tags_log": [
-#       "social","escritório", "masculina","estiloso", "genuino"
-#     ],
-#     "type_log": "UPDATE"
-#   }
-# atualizacoes.append(a1)
-#   632 | 14 | sapato masculino | calçado | 74.89, viagem, moderno, verão
-# a2 = {
-#     "categoria_log": "",
-#     "id_log": 8,
-#     "id_produto":632,
-#     "nome": "",
-#     "preco": '',
-#     "tags_log": [
-#       "masculina","camisa", "genuino"
-#     ],
-#     "type_log": "UPDATE"
-#   }
-# atualizacoes.append(a2)
+a1 = {
+    "categoria_log": "acessórios",
+    "id_log": 8,
+    "id_produto":120,
+    "nome": "carteira de couro decorada",
+    "preco": 50.00,
+    "tags_log": [
+      "social","escritório", "masculina","estiloso", "genuino"
+    ],
+    "type_log": "UPDATE"
+  }
+atualizacoes.append(a1)
+  # 632 | 14 | sapato masculino | calçado | 74.89, viagem, moderno, verão
+a2 = {
+    "categoria_log": "",
+    "id_log": 8,
+    "id_produto":632,
+    "nome": "",
+    "preco": '',
+    "tags_log": [
+      "masculina","camisa", "genuino"
+    ],
+    "type_log": "UPDATE"
+  }
+atualizacoes.append(a2)
 
 # 200 | 18 | calça feminina | calça | 63.99 , moderno, empresa, trabalho
-# a3 = {
-#     "categoria_log": "calça",
-#     "id_log": 8,
-#     "id_produto":200,
-#     "nome": "",
-#     "preco": 35.20,
-#     "tags_log": [],
-#     "type_log": "UPDATE"
-#   }
-# atualizacoes.append(a3)
+a3 = {
+    "categoria_log": "calça",
+    "id_log": 8,
+    "id_produto":200,
+    "nome": "",
+    "preco": 35.20,
+    "tags_log": [],
+    "type_log": "UPDATE"
+  }
+atualizacoes.append(a3)
 
-# delete_list = []# ['20','30','62']
+delete_list = ['20','30','62']
 # print("carregou")
-# t = a.realiza_operacoes_atualizacao_bd(insercoes, atualizacoes, delete_list)
+a = Interface()
+t = a.realiza_operacoes_atualizacao_bd(insercoes, atualizacoes, delete_list)
 # print(t)
 
 # [
@@ -206,22 +212,50 @@ atualizacoes = []
 # face
 
 
-
+from random import randint
+import random
 # print('inicio')
-a = Interface()
+import threading
 
 
-#
-b = Busca()
-# b.atribui_ordenacao('preco')
-b.atribui_busca('estilo bermuda verão')
-b.atribui_categoria('bermuda')
-b.atribui_id(257)
-b.atribui_valor_maximo(90)
-# b.atribui_valor_minimo(79)
-
+def faz(a):
+    # a = Interface()
+    b = Busca()
+    # b.atribui_ordenacao('preco')
+    b.atribui_busca('estilo bermuds vdauvdsau verão')
+    # b.atribui_categoria('bermuda')
+    b.atribui_id(randint(100, 500))
+    if random.random() > 0.6:
+        b.atribui_valor_maximo(90)
+    elif random.random() > 0.6:
+        b.atribui_valor_minimo(79)
+    else:
+        b.atribui_valor_maximo(100)
+        b.atribui_valor_minimo(20)
 # print(id(b))
-print(a.busque(b))
+    a.busque(b)
+
+t = threading.Thread(target=faz,args=(a,))
+t.start()
+ti = time.time()
+for _ in range(100):
+#
+    b = Busca()
+    # b.atribui_ordenacao('preco')
+    b.atribui_busca('estilo bermuds vdauvdsau verão')
+    # b.atribui_categoria('bermuda')
+    b.atribui_id(randint(100, 500))
+    if random.random() > 0.6:
+        b.atribui_valor_maximo(90)
+    elif random.random() > 0.6:
+        b.atribui_valor_minimo(79)
+    else:
+        b.atribui_valor_maximo(100)
+        b.atribui_valor_minimo(20)
+# print(id(b))
+    a.busque(b)
+print(time.time()-ti)
+# foda-se
 # print('comeca busca')
 # initial_time = time.time()
 #
