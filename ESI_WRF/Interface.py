@@ -55,7 +55,7 @@ class Interface:
 
         for insercao in insert_dict:
             queryDeAtualizacao += ac.inserirProduto(insercao["id_produto"], insercao["nome"],
-                            insercao["categoria_log"],insercao["preco"],[r.devolveVetor(self.corretor.corrige(t)) for t in insercao["tags_log"]] ,insercao["tags_log"])
+                            insercao["categoria_log"],insercao["preco"],[r.devolveVetorArmazena(self.corretor.corrige(t)) for t in insercao["tags_log"]] ,insercao["tags_log"])
         for atualizacao in update_dict:
             if atualizacao["nome"]:
                 queryDeAtualizacao += ac.atualizeProdutoNome(atualizacao["id_produto"], atualizacao["nome"])
@@ -66,7 +66,7 @@ class Interface:
 
             if atualizacao["tags_log"]:
                 queryDeAtualizacao += ac.atualizeProdutoTags(atualizacao["id_produto"], atualizacao["tags_log"],
-                                                             [r.devolveVetor(self.corretor.corrige(t)) for t in atualizacao["tags_log"]])
+                                                             [r.devolveVetorArmazena(self.corretor.corrige(t)) for t in atualizacao["tags_log"]])
 
         for id_p in delete_list:
             queryDeAtualizacao += ac.delete_produto(id_p)
