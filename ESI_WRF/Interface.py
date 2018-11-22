@@ -39,6 +39,7 @@ class Interface:
     def _representacao(self, busca):
         words = self._my_tokenizer(busca)
         words = self.corretor.corrige(words)
+        # print(words)
         return self.representacao.devolveVetor(words)
 
     def _ordene(self, ids, lista):

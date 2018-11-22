@@ -1,5 +1,7 @@
 import smtplib
-#from Interface import Interface
+import sys
+sys.path.insert(0, "../ESI_WRF/")
+from Interface import Interface
 
 class JsonInsertioDeletionChange():
 

@@ -2,9 +2,11 @@ from collections import Counter
 
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
+import operator
 import math
 import time
 import sys
+from itertools import islice
 from representacao import Representacao
 import random, _thread as thread
 from sklearn.neighbors import radius_neighbors_graph
@@ -33,10 +35,13 @@ class Pesquisa():
         A = [f[0] for f in cnt.most_common(n)]
         return [Y[a] for a in A]
 
+    def _take(n, iterable):
+        "Return first n items of the iterable as a list"
+        return list(islice(iterable, n))
 
     def busca_limite_distancia(self, values, base, ids):
         base = np.array(base)
-        values = np.array([values])
+        values = np.array(values)
         # s = 0
         # for i in range(len(base)):
         #     for a in base[i]:
@@ -49,14 +54,40 @@ class Pesquisa():
         # print(values)
 
         distances, indices = self._nearest_neighbors(values, base, int(len(ids)/10))
-
+        # print('distancias')
         # print(distances)
+        # print('melhores')
+        # print(indices)
+        # print('indices originais')
+        # print(ids)
+        dict = {}
+        for v_d, v_i in zip(distances, indices):
+            for dis,ind in zip(v_d, v_i):
+                if ind in dict.keys():
+                    dict[ind] += dis
+                else:
+                    dict[ind] = dis
+                # print(dis, ind)
+
         # print(type(indices[0]))
         # print(len(list(set(indices[0]))))
+        c = Counter(ids)
+        # print(dict)
+        # print(c)
+        for i in dict:
+            dict[i] = dict[i]*c[ids[i]]
 
-        resposta = [ids[indices[0][l]] for l in range(len(indices[0])) if distances[0][l] < 1]
+        # print(dict)
+
+        sorted_x = sorted(dict.items(), key=operator.itemgetter(1))
+        # print(sorted_x)
+        resposta = [sorted_x[i][0] for i in range(len(sorted_x)) if sorted_x[i][1] < 2]
         # print(resposta)
-        return list(set(resposta))
+        return resposta
+        # print(self._take(4, sorted_x.keys()))
+        # resposta = [ids[indices[0][l]] for l in range(len(indices[0])) if distances[0][l] < 1]
+        # print(resposta)
+        # return list(set(resposta))
         # base.insert(0, values)
         # nn = radius_neighbors_graph(base, 10.0, mode='connectivity',
         #                            metric='manhattan', include_self=True)
