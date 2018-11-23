@@ -1,5 +1,6 @@
 import smtplib
 import sys
+import json
 sys.path.insert(0, "../ESI_WRF/")
 from Interface import Interface
 
@@ -28,22 +29,25 @@ class JsonInsertioDeletionChange():
         delete_list = []
         #myJson is a list 
         sendAlert = EnviarNotificacao()
+        myJson = json.loads(myJson)
+        print(myJson)
         for dicio in myJson:
-            if dicio("type_log") == "INSERCAO":
+            print(dicio)
+            if dicio['type_log'] == 'INSERT':
                 insercoes.append(dicio)
-            elif dicio("type_log") == "DELECAO": #Só id
-                delete_list.append(dicio("id_produto"))#lista de ids
+            elif dicio['type_log'] == 'DELETE': #Só id
+                delete_list.append(dicio['id_produto'])#lista de ids
             else:
                 atualizacoes.append(dicio)
 
         #MyInterface = Interface()
         #error = MyInterface.realiza_operacoes_atualizacao_bd(insercoes, atualizacoes, delete_list)
-        sendAlert.enviarEmail(error)
+        #sendAlert.enviarEmail(error)
         
         #saving the last value read at or json
         with open("the_last_logid.txt", "w", encoding='utf-8') as f:
             last_dicio = myJson[-1]
-            f.write(last_dicio("id_log"))
+            f.write(str(last_dicio['id_log']))
 
 
     def get_last_id_log(self):
