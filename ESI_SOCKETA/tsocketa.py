@@ -25,7 +25,7 @@ def threadJob(con):
 cont=0;
 while True :
     host = ''
-    port = 7103+cont
+    port = 7600+cont
     addr = (host, port)
     serv_socket = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
     serv_socket.setsockopt (socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
