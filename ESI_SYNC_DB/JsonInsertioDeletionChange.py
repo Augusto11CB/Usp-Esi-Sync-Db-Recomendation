@@ -29,25 +29,33 @@ class JsonInsertioDeletionChange():
         delete_list = []
         #myJson is a list 
         sendAlert = EnviarNotificacao()
+        print(1)
+        print(myJson)
         myJson = json.loads(myJson)
+        print(2)
         print(myJson)
         for dicio in myJson:
-            print(dicio)
-            if dicio['type_log'] == 'INSERT':
+            print(dicio["type_log"])
+            if str(dicio["type_log"]) is 'INSERT':
                 insercoes.append(dicio)
-            elif dicio['type_log'] == 'DELETE': #Só id
-                delete_list.append(dicio['id_produto'])#lista de ids
+            elif str(dicio["type_log"]) is 'DELETE': #Só id
+                delete_list.append(str(dicio["id_produto"]))#lista de ids
             else:
                 atualizacoes.append(dicio)
 
-        #MyInterface = Interface()
-        #error = MyInterface.realiza_operacoes_atualizacao_bd(insercoes, atualizacoes, delete_list)
-        #sendAlert.enviarEmail(error)
+        MyInterface = Interface()
+        error = MyInterface.realiza_operacoes_atualizacao_bd(insercoes, atualizacoes, delete_list)
+        if error is not None:
+            print(error)
+            pass
+            #sendAlert.enviarEmail(error)
         
         #saving the last value read at or json
+        print(len(myJson))
+        last_dicio = myJson[-1]
         with open("the_last_logid.txt", "w", encoding='utf-8') as f:
-            last_dicio = myJson[-1]
-            f.write(str(last_dicio['id_log']))
+
+            f.write(str(last_dicio["id_log"]))
 
 
     def get_last_id_log(self):

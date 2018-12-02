@@ -1,7 +1,7 @@
 from JsonInsertioDeletionChange import *
 from EduBD import *
 from time import *
-
+from ESI_WRF.Interface import Interface
 
 class Synchronizer:
 
