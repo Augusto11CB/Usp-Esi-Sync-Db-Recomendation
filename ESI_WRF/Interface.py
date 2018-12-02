@@ -39,11 +39,24 @@ class Interface:
     def _representacao(self, busca):
         words = self._my_tokenizer(busca)
         words = self.corretor.corrige(words)
+        # print('corrigidas')
         # print(words)
         return self.representacao.devolveVetor(words)
 
-    def _ordene(self, ids, lista):
-        return (list(t) for t in zip(*sorted(zip(lista, ids))))
+    def _ordene(self, ids, ordenacao):
+        if not ordenacao:
+            return ids
+
+        if ordenacao =='menor_preco':
+            return AcessaBD().ordene_menor_preco(ids)
+
+        if ordenacao == 'maior_preco':
+            return AcessaBD().ordene_maior_preco(ids)
+
+        if ordenacao == 'popularidade':
+            return AcessaBD().ordene_popularidade(ids)
+
+        return ids
 
 
     # produto
@@ -100,16 +113,27 @@ class Interface:
     #     Acesso_bd_updates_insercoes.atualizeProdutoCategoria(idProduto, categoria)
 
     #busca
-    def busque_n_relacionados(self, id_cliente, id_produto, n=5):
+    def busque_n_relacionados(self, id_cliente=None, id_produto=None, n=5):
+        if not id_produto:
+            return []
         if id_cliente:
             self._add_visualizacao(id_produto, id_cliente)
+        else:
+            Acesso_bd_updates_insercoes().incrementa_visualizacao(id_produto)
+
         ids, vetores, valores_produto = AcessaBD().busque_produtos_categoria_de(id_produto)
 
         return self.pesquisa.busca_n_relacionados(valores_produto, vetores, ids, n)
 
 
+
+    def retorne_sugestoes(self, caixa_busca):
+        t =self.corretor.corrige(caixa_busca.lower().split())
+        # print(' '.join(t))
+        return AcessaBD().busca_sugestoes(' '.join(t))
+
     def busque(self, busca):
-        if busca.id_cliente and busca.busca:
+        if busca.busca:
             Acesso_bd_updates_insercoes().inserirBusca(busca.id_cliente, busca.busca)
         return self._devolveProdutos(busca.busca, busca.min_price, busca.max_price, busca.categoria, busca.ordenacao)
 
@@ -119,10 +143,14 @@ class Interface:
     def _inserir_busca(self, idCliente, busca):
         Acesso_bd_updates_insercoes().inserirBusca(idCliente, busca)
 
-    def _define_ordenacao(self, ordenacao, list, ):
+    def _define_ordenacao(self, ordenacao, preco, visu):
         if ordenacao == 'preco':
-            return 'order by produto.preco'
+            return preco
+        return visu
 
+    # def _ordene(self, ord, ids, melhores):
+    #     list1, list2 = zip(*sorted(zip(ord, ids)))
+    #     return [i for i in list2 if i in melhores]
 
     def _devolveProdutos(self, busca, min_preco, max_preco, categoria, ordenacao):
         # if categoria and max_preco and min_preco and busca:
@@ -147,22 +175,34 @@ class Interface:
         #     return self._ordene(self.pesquisa.busca_limite_distancia(self._representacao(busca), base, ids),
         #                         self._define_ordenacao(ordenacao, vizualizacao, preco))
 
+
         if categoria and busca:
-            ids, base, preco = AcessaBD().devolve_produtos_categoria_busca(categoria, max_preco, min_preco)
-            print(base)
-            if len(base) == 0:
+            ids, base = AcessaBD().devolve_produtos_categoria_busca(categoria, max_preco, min_preco)
+            # print(type(base))
+            if len(ids) == 0:
                 return None
-            return self.pesquisa.busca_limite_distancia(self._representacao(busca), base, ids)
+            # print('Esse valores')
+            # print(ids)
+            # print(preco)
+            # print(vis)
+            resposta = self.pesquisa.busca_limite_distancia(self._representacao(busca), base, ids)
+            # print(resposta)
+            # if ordenacao:
+            #     return self._ordene(self._define_ordenacao(ordenacao, preco, vis), ids, resposta)
+            return self._ordene(resposta, ordenacao)
 
         if categoria:
             ids = AcessaBD().devolve_produtos_categoria(categoria, max_preco, min_preco)
-            return ids
+            # _, list2 = zip(*sorted(zip(self._define_ordenacao(ordenacao, preco, vis), ids)))
+            return self._ordene(ids, ordenacao)
 
         if busca:
-            ids, base, preco = AcessaBD().devolve_produtos_ordenado(ordenacao, max_preco, min_preco)
+            ids, base = AcessaBD().devolve_produtos(max_preco, min_preco)
             if len(base) == 0:
                 return None
-            return self.pesquisa.busca_limite_distancia(self._representacao(busca), base, ids)
+            resposta = self.pesquisa.busca_limite_distancia(self._representacao(busca), base, ids)
+
+            return self._ordene(resposta, ordenacao)
 
         ids, base, vizualizacao, preco = AcessaBD().devolveProdutos()
         return ids

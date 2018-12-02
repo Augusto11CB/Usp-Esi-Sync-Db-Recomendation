@@ -29,20 +29,19 @@ class JsonInsertioDeletionChange():
         delete_list = []
         #myJson is a list 
         sendAlert = EnviarNotificacao()
-        print(1)
-        print(myJson)
         myJson = json.loads(myJson)
-        print(2)
-        print(myJson)
         for dicio in myJson:
-            print(dicio["type_log"])
-            if str(dicio["type_log"]) is 'INSERT':
+            if str(dicio["type_log"]) == 'INSERT':
                 insercoes.append(dicio)
-            elif str(dicio["type_log"]) is 'DELETE': #Só id
+            elif str(dicio["type_log"]) == 'DELETE': #Só id
                 delete_list.append(str(dicio["id_produto"]))#lista de ids
             else:
                 atualizacoes.append(dicio)
 
+
+        print(insercoes)
+        print(atualizacoes)
+        print(delete_list)
         MyInterface = Interface()
         error = MyInterface.realiza_operacoes_atualizacao_bd(insercoes, atualizacoes, delete_list)
         if error is not None:
@@ -51,7 +50,8 @@ class JsonInsertioDeletionChange():
             #sendAlert.enviarEmail(error)
         
         #saving the last value read at or json
-        print(len(myJson))
+        if len(myJson) == 0:
+            return
         last_dicio = myJson[-1]
         with open("the_last_logid.txt", "w", encoding='utf-8') as f:
 
@@ -60,15 +60,17 @@ class JsonInsertioDeletionChange():
 
     def get_last_id_log(self):
         f = open("the_last_logid.txt","r").read()
+        if not f:
+            return -1
         return int(f)
 
     def __init__(self):
         pass
-        
 
 
 
-            
+
+
 class EnviarNotificacao():
     global remetente
     global senha

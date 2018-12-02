@@ -1,9 +1,42 @@
+from gensim.models import KeyedVectors
 from sklearn.neighbors import NearestNeighbors
-X = [[0,0], [1,1], [5,5], [-2,-2], [10,10]]
-Y = [[-1,-1],[6,6]]
+import psycopg2
+from decimal import Decimal
+import numpy as np
+import random
+# X = [[0,0], [1,1], [5,5], [-2,-2], [10,10]]
+# Y = [[Decimal(0),Decimal(0)],[Decimal(6),Decimal(6)]]
 
 import sys
-sys.path.append('/home/maxtelll/PycharmProjects/ic/facets')
+
+# sys.path.append('/home/maxtelll/PycharmProjects/ic/facets')
+#
+#
+conn = psycopg2.connect("dbname=esifr user=postgres password=6494 host=localhost")
+cur = conn.cursor()
+#
+cur.execute('select idproduto from produto where idproduto in %s order by preco;', ( tuple([1,5,2,3]),))
+resp = cur.fetchall()
+ids = [i[0] for i in resp]
+print(ids)
+# print(nome)
+# print(np.array(tag))
+a = [1,1]
+# m = KeyedVectors.load_word2vec_format('/home/maxtelll/Documents/USP/sextoSemestre/esi/projeto/cbow_s50.txt',
+#                                           unicode_errors="ignore")
+# model = m.wv
+# model.init_sims(replace=True)
+# d = open('/home/maxtelll/Documents/USP/sextoSemestre/esi/projeto/s.txt','w+')
+# g = [f for f in model.vocab]
+#
+# saida = ''
+# for h in g:
+#     saida+=h+'\n'
+#
+# d.write(saida)
+# d.close()
+
+# print(a[100])
 
 
 # print(X)
@@ -11,6 +44,9 @@ sys.path.append('/home/maxtelll/PycharmProjects/ic/facets')
 # d,i = nn.kneighbors(Y)
 # print(d)
 # print(i)
+
+# a = [1,1]
+# print(a[100])
 
 
 # from sklearn.neighbors import radius_neighbors_graph
@@ -94,90 +130,105 @@ from bd_acesso_busca_recomendacoes import AcessaBD
 
 # print(a.busque_n_relacionados(5,40))
 insercoes = []
-i1 = {
-    "categoria_log": "camiseta",
-    "id_log": 8,
-    "id_produto":1008,
-    "nome": "camiseta branca regata",
-    "preco": 99.95,
-    "tags_log": [
-      "camiseta","estilosu", "genuino"
-    ],
-    "type_log": "INSERT"
-  }
-insercoes.append(i1)
-i2 = {
-    "categoria_log": "calça",
-    "id_log": 8,
-    "id_produto":1006,
-    "nome": "calça jeans",
-    "preco": 120.00,
-    "tags_log": [
-      "calça","moda", "feminina","nova"
-    ],
-    "type_log": "INSERT"
-  }
-insercoes.append(i2)
-
-i3 = {
-    "categoria_log": "calça",
-    "id_log": 8,
-    "id_produto":1007,
-    "nome": "calça social",
-    "preco": 99.95,
-    "tags_log": [
-      "calça social","escritório", "masculina","preta"
-    ],
-    "type_log": "INSERT"
-  }
-insercoes.append(i3)
-
-atualizacoes = []
-#  120 | 16 | carteira de couro preta | acessórios | 21.44, camiseta, verão, escritório
-a1 = {
-    "categoria_log": "acessórios",
-    "id_log": 8,
-    "id_produto":120,
-    "nome": "carteira de couro decorada",
-    "preco": 50.00,
-    "tags_log": [
-      "social","escritório", "masculina","estiloso", "genuino"
-    ],
-    "type_log": "UPDATE"
-  }
-atualizacoes.append(a1)
-  # 632 | 14 | sapato masculino | calçado | 74.89, viagem, moderno, verão
-a2 = {
-    "categoria_log": "",
-    "id_log": 8,
-    "id_produto":632,
-    "nome": "",
-    "preco": '',
-    "tags_log": [
-      "masculina","camisa", "genuino"
-    ],
-    "type_log": "UPDATE"
-  }
-atualizacoes.append(a2)
-
-# 200 | 18 | calça feminina | calça | 63.99 , moderno, empresa, trabalho
-a3 = {
-    "categoria_log": "calça",
-    "id_log": 8,
-    "id_produto":200,
-    "nome": "",
-    "preco": 35.20,
-    "tags_log": [],
-    "type_log": "UPDATE"
-  }
-atualizacoes.append(a3)
-
-delete_list = ['20','30','62']
+# i1 = {
+#     "categoria_log": "camiseta",
+#     "id_log": 8,
+#     "id_produto":1008,
+#     "nome": "camiseta branca regata",
+#     "preco": 99.95,
+#     "tags_log": [
+#       "camiseta","estilosu", "genuino"
+#     ],
+#     "type_log": "INSERT"
+#   }
+# insercoes.append(i1)
+# i2 = {
+#     "categoria_log": "calça",
+#     "id_log": 8,
+#     "id_produto":1006,
+#     "nome": "calça jeans",
+#     "preco": 120.00,
+#     "tags_log": [
+#       "calça","moda", "feminina","nova"
+#     ],
+#     "type_log": "INSERT"
+#   }
+# insercoes.append(i2)
+#
+# i3 = {
+#     "categoria_log": "calça",
+#     "id_log": 8,
+#     "id_produto":1007,
+#     "nome": "calça social",
+#     "preco": 99.95,
+#     "tags_log": [
+#       "calça social","escritório", "masculina","preta"
+#     ],
+#     "type_log": "INSERT"
+#   }
+# insercoes.append(i3)
+#
+# atualizacoes = []
+# #  120 | 16 | carteira de couro preta | acessórios | 21.44, camiseta, verão, escritório
+# a1 = {
+#     "categoria_log": "acessórios",
+#     "id_log": 8,
+#     "id_produto":120,
+#     "nome": "carteira de couro decorada",
+#     "preco": 50.00,
+#     "tags_log": [
+#       "social","escritório", "masculina","estiloso", "genuino"
+#     ],
+#     "type_log": "UPDATE"
+#   }
+# atualizacoes.append(a1)
+#   # 632 | 14 | sapato masculino | calçado | 74.89, viagem, moderno, verão
+# a2 = {
+#     "categoria_log": "",
+#     "id_log": 8,
+#     "id_produto":632,
+#     "nome": "",
+#     "preco": '',
+#     "tags_log": [
+#       "masculina","camisa", "genuino"
+#     ],
+#     "type_log": "UPDATE"
+#   }
+# atualizacoes.append(a2)
+#
+# # 200 | 18 | calça feminina | calça | 63.99 , moderno, empresa, trabalho
+# a3 = {
+#     "categoria_log": "calça",
+#     "id_log": 8,
+#     "id_produto":200,
+#     "nome": "",
+#     "preco": 35.20,
+#     "tags_log": [],
+#     "type_log": "UPDATE"
+#   }
+# atualizacoes.append(a3)
+#
+# delete_list = ['20','30','62']
 # print("carregou")
 a = Interface()
-t = a.realiza_operacoes_atualizacao_bd(insercoes, atualizacoes, delete_list)
-# print(t)
+sugestoes = ['sapat', 'calça', 'camiseta', 'couro','blusa', 'jeans','caqui','vermelha','carteira','camiseta','bolsa']
+inicial = time.time()
+# for _ in range(1000):
+#     print(a.retorne_sugestoes(random.choice(sugestoes)))
 
+print(time.time()-inicial)
+# t = a.realiza_operacoes_atualizacao_bd(insercoes, atualizacoes, delete_list)
+# print(t)
+# b = Busca()
+# b.atribui_ordenacao('preco')
+# b.atribui_busca('estilo bermuds vdauvdsau verão')
+# b.atribui_categoria('bermuda')
+# b.atribui_id(10)
+# b.atribui_valor_maximo(90)
+# b.atribui_valor_minimo(79)
+
+# print(a.busque(b))
+# print('foi')
 # [
 #   {
 #     "categoria_log": "string",
@@ -218,51 +269,102 @@ import random
 import threading
 
 
-def faz(a):
+# def faz(a):
     # a = Interface()
-    b = Busca()
+    # b = Busca()
     # b.atribui_ordenacao('preco')
-    b.atribui_busca('estilo bermuds vdauvdsau verão')
-    # b.atribui_categoria('bermuda')
-    b.atribui_id(randint(100, 500))
-    if random.random() > 0.6:
-        b.atribui_valor_maximo(90)
-    elif random.random() > 0.6:
-        b.atribui_valor_minimo(79)
-    else:
-        b.atribui_valor_maximo(100)
-        b.atribui_valor_minimo(20)
-# print(id(b))
-    a.busque(b)
+#     b.atribui_busca('estilo bermuds vdauvdsau verão')
+#     # b.atribui_categoria('bermuda')
+#     b.atribui_id(randint(100, 500))
+#     if random.random() > 0.6:
+#         b.atribui_valor_maximo(90)
+#     elif random.random() > 0.6:
+#         b.atribui_valor_minimo(79)
+#     else:
+#         b.atribui_valor_maximo(100)
+#         b.atribui_valor_minimo(20)
+# # print(id(b))
+#     a.busque(b)
 
-t = threading.Thread(target=faz,args=(a,))
-t.start()
-ti = time.time()
+# t = threading.Thread(target=faz,args=(a,))
+# t.start()
+# ti = time.time()
+# for _ in range(100):
+# #
+# sugestoes = ['sapat', 'calça', 'camiseta', 'couro','blusa', 'jeans','caqui','vermelha','carteira','camiseta','bolsa']
+categoria = {
+'roupa social':'camisa,gravata,sapato,gravata,camisa social,listrada,escritório,social,branco,preto,negócios,chefe,branca',
+'bolsa':'bolsa vermelha,bolsa da moda,bolsa de couro,mulher,fashion,prático,moda,facilidade,festa,couro',
+'mochila':'mochila escolar,mochila de viagem,estudante,viagem,praticidade,bagagem,couro,impermeável,grande carga,preta',
+'acessórios':'óculos,carteira de couro,relógio,colar,corrente,óculos de sol,moda,couro,importado,escritório,jóias',
+'blusa':'blusa de lã,jaqueta,jaqueta de couro,couro,inverno,aquecimento,preta,branca,cinza,azul,rosa,bege',
+'camiseta':'camiseta branca,camiseta regata,bandas,informal,regata,esporte,academia,futebol,preta,branca,cinza,azul,vermelho,amarelo',
+'calça':'calça jeans,calça social,calça caqui,longa,jeans,confortável,preta,branca,cinza,azul,moletom',
+'calçado':'tênis,tênis corrida,tênis com amortecedor,mola,amortecedor,confortável,preta,branca,cinza,azul,esporte,corrida,academia,exercício,camisa preta chefe'
+}
+
+
+print(a.busque_n_relacionados(id_produto=733))
+print('recomendacoes')
+# print(a.devolveNprodutosRecomendados(5, 10))
+# print(a.devolveNprodutosRecomendados(20, 10))
+# print(a.devolveNprodutosRecomendados(80, 2))
+# print(a.devolveNprodutosRecomendados(1000, 10))
+# print(a.devolveRecomendacaoPaginaInicial(10))
+
+# b = Busca()
+# # b.atribui_ordenacao('preco')
+# # cat = random.choice(list(categoria.keys()))
+# # digitado = random.choice(categoria[cat].split(','))
+# # print(digitado)
+# b.atribui_busca('camisa preta chefe')
+# b.atribui_categoria('roupa social')
+# b.atribui_valor_maximo(40)
+# b.atribui_ordenacao('popularidade')
+# # [1269, 819, 204, 1518, 2448, 938, 1753, 2909, 734]
+# print(a.busque(b))
+# a=[1]
+# print(a[10])
+
+inicial = time.time()
 for _ in range(100):
-#
     b = Busca()
     # b.atribui_ordenacao('preco')
-    b.atribui_busca('estilo bermuds vdauvdsau verão')
-    # b.atribui_categoria('bermuda')
-    b.atribui_id(randint(100, 500))
+    cat = random.choice(list(categoria.keys()))
+    digitado = random.choice(categoria[cat].split(','))
+    # print(digitado)
+    b.atribui_busca(digitado)
+    if random.random() > 0.7:
+        b.atribui_categoria(cat)
+    if random.random() > 0.6:
+        b.atribui_ordenacao(random.choice(['menor_preco', 'maior_preco','popularidade']))
+    if random.random() > 0.2:
+        b.atribui_id(randint(0, 500))
     if random.random() > 0.6:
         b.atribui_valor_maximo(90)
     elif random.random() > 0.6:
-        b.atribui_valor_minimo(79)
-    else:
-        b.atribui_valor_maximo(100)
-        b.atribui_valor_minimo(20)
-# print(id(b))
-    a.busque(b)
-print(time.time()-ti)
+        b.atribui_valor_minimo(10)
+    # else:
+    #     b.atribui_valor_maximo(100)
+        # b.atribui_valor_minimo(5)
+    # # print(id(b))
+
+    # print(len(a.busque(b)))
+
+print(time.time()-inicial)
+print('foi esse')
+
+
+# print(time.time()-ti)
 # foda-se
 # print('comeca busca')
 # initial_time = time.time()
 #
-print(a.devolveNprodutosRecomendados(5, 10))
-print(a.devolveNprodutosRecomendados(200, 10))
-print(a.devolveNprodutosRecomendados(1000, 10))
-print(a.devolveRecomendacaoPaginaInicial(10))
+# print('recomendacoes')
+# print(a.devolveNprodutosRecomendados(5, 10))
+# print(a.devolveNprodutosRecomendados(20, 10))
+# print(a.devolveNprodutosRecomendados(80, 2))
+# print(a.devolveRecomendacaoPaginaInicial(10))
 
 # print(len(i.busque(b)))
 

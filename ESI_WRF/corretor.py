@@ -7,7 +7,7 @@ class Corretor():
     global WORDS
     def __init__(self):
         def words(text): return re.findall(r'\w+', text.lower())
-        self.WORDS = Counter(words(open('/home/ubuntu/Documents/ESI_SYNC_DB_RECOMENDATION/ESI_WRF/resourcesToSearch/bigpt.txt', encoding='utf-8').read()))
+        self.WORDS = Counter(words(open('C:/Users/Lima/PycharmProjects/ESI_SYNC_DB_RECOMENDATION/ESI_WRF/resourcesToSearch/bigpt2.txt', encoding='utf-8').read().lower()))
 
     def P(self, word):
         N = sum(self.WORDS.values())

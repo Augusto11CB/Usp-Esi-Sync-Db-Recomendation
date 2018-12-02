@@ -14,7 +14,7 @@ from sklearn.neighbors import radius_neighbors_graph
 class Pesquisa():
 
     def _nearest_neighbors(self, values, base, nbr_neighbors = 5):
-        nn = NearestNeighbors(nbr_neighbors, metric='euclidean', algorithm='brute').fit(base)
+        nn = NearestNeighbors(nbr_neighbors, metric='cosine', algorithm='brute').fit(base)
         return nn.kneighbors(values)
 
 
@@ -41,7 +41,9 @@ class Pesquisa():
 
     def busca_limite_distancia(self, values, base, ids):
         base = np.array(base)
-        values = np.array(values)
+        values = np.array([values])
+        # print(values)
+        # print(base)
         # s = 0
         # for i in range(len(base)):
         #     for a in base[i]:
@@ -53,37 +55,44 @@ class Pesquisa():
         # print(len(base))
         # print(values)
 
-        distances, indices = self._nearest_neighbors(values, base, int(len(ids)/10))
+        distances, indices = self._nearest_neighbors(values, base, int(len(base)/10))
         # print('distancias')
         # print(distances)
         # print('melhores')
         # print(indices)
         # print('indices originais')
         # print(ids)
+        # print([ids[f] for f in indices[0]])
         dict = {}
         for v_d, v_i in zip(distances, indices):
             for dis,ind in zip(v_d, v_i):
-                if ind in dict.keys():
-                    dict[ind] += dis
+                if ids[ind] in dict.keys():
+                    dict[ids[ind]] += dis
                 else:
-                    dict[ind] = dis
+                    dict[ids[ind]] = dis
                 # print(dis, ind)
 
         # print(type(indices[0]))
         # print(len(list(set(indices[0]))))
-        c = Counter(ids)
+        c_melhores = Counter([ids[f] for f in indices[0]])
+        c_apareceu = Counter(ids)
+        # print('soma de distancias')
         # print(dict)
-        # print(c)
+        # print(c_melhores)
+        # print(c_apareceu)
         for i in dict:
-            dict[i] = dict[i]*c[ids[i]]
+            dict[i] = (dict[i]*c_apareceu[i])/(c_melhores[i]**2)
 
+        # print('depois')
         # print(dict)
-
+        #
         sorted_x = sorted(dict.items(), key=operator.itemgetter(1))
         # print(sorted_x)
-        resposta = [sorted_x[i][0] for i in range(len(sorted_x)) if sorted_x[i][1] < 2]
+        # resposta = [sorted_x[i][0] for i in range(len(sorted_x)) if sorted_x[i][1] < 0.7]
         # print(resposta)
-        return resposta
+        limiar = sum(dict.values())/(1.4*len(dict.keys()))
+        # print(limiar)
+        return [i[0] for i in sorted_x if i[1] < limiar]
         # print(self._take(4, sorted_x.keys()))
         # resposta = [ids[indices[0][l]] for l in range(len(indices[0])) if distances[0][l] < 1]
         # print(resposta)

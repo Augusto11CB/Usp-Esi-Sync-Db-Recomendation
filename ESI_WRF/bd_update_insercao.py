@@ -7,8 +7,13 @@ class Acesso_bd_updates_insercoes():
     global cur
 
     def __init__(self):
-        self.conn = psycopg2.connect("dbname=esifr user=postgres password=Alphabet@6494 host=localhost")
+        self.conn = psycopg2.connect("dbname=esifr user=postgres password=6494 host=localhost")
         self.cur = self.conn.cursor()
+
+    def incrementa_visualizacao(self, id_produto):
+        query = 'UPDATE produto SET vizualizado = vizualizado + 1 WHERE idProduto = ' + str(id_produto) + ';\n'
+        self.cur.execute(query)
+        self.conn.commit()
 
     def inserirVisualizacao(self, idProduto, idCliente):
         query = 'begin;\nUPDATE produto SET vizualizado = vizualizado + 1 WHERE idProduto = '+str(idProduto)+';\n'
@@ -18,8 +23,12 @@ class Acesso_bd_updates_insercoes():
         self.conn.commit()
 
     def inserirBusca(self, idCliente, busca):
-        self.cur.execute("insert into buscas (idCliente, busca, dt) values (%s, %s, %s)",
-                         (idCliente, busca, datetime.datetime.now()))
+        if idCliente:
+            self.cur.execute("insert into buscas (idCliente, busca, dt) values (%s, %s, %s)",
+                         (idCliente, busca.lower(), datetime.datetime.now()))
+        else:
+            self.cur.execute("insert into buscas (busca, dt) values (%s, %s)",
+                             (busca.lower(), datetime.datetime.now()))
         self.conn.commit()
 
     def run_query_inserts_updates_deletes(self, query):
