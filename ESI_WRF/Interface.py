@@ -36,6 +36,7 @@ class Interface:
     #     return Busca()
 
 
+
     def _representacao(self, busca):
         words = self._my_tokenizer(busca)
         words = self.corretor.corrige(words)
@@ -58,6 +59,9 @@ class Interface:
 
         return ids
 
+    # relatorios
+    def retorne_buscas_n_dias(self, dias):
+        return AcessaBD_relatorios().devolva_mais_pesquisados_n_dias(dias)
 
     # produto
 
