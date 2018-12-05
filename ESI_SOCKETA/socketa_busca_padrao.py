@@ -2,6 +2,8 @@ import socket
 from time import *
 from decimal import Decimal
 from threading import Thread
+import sys
+sys.path.insert(0, '/home/ubuntu/Documents/ESI_SYNC_DB_RECOMENDATION/ESI_SOCKETA/ESI_WRF')
 from Interface import Interface
 from Busca import Busca
 
