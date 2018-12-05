@@ -18,7 +18,7 @@ def parsear(entrada_url):
 def threadJob(con):
     
     recebe = con.recv (1024)
-    entradas_da_url = recebe.decode()
+    entradas_da_url = recebe.decode('latin_1')
     dicio_de_entradas = parsear(entradas_da_url)
 
     myInterface = Interface()
@@ -29,11 +29,13 @@ def threadJob(con):
     b.atribui_id(int(dicio_de_entradas[2]))
     b.atribui_valor_maximo(Decimal(dicio_de_entradas[3]))
     b.atribui_valor_minimo(Decimal(dicio_de_entradas[4]))
-
+    b.atribui_ordenacao(dicio_de_entradas[5])
+    for i in dicio_de_entradas:
+        print("i-",i)
     lista_de_id = myInterface.busque(b)
 
-    string_de_ids = converter(lista_de_id)
-    con.send(string_de_ids.encode())
+    string_de_ids = str(lista_de_id)
+    con.send((string_de_ids+"\n").encode())
 
 cont=0;
 while True :

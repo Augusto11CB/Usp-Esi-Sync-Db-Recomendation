@@ -19,14 +19,14 @@ def threadJob(con):
     entradas_da_url = recebe.decode()
     dicio_de_entradas = parsear(entradas_da_url)
     lista_de_id = myInterface.devolveNprodutosRecomendados(dicio_de_entradas[0],dicio_de_entradas[1]) #idusuario idproduto
-    string_de_ids = converter(lista_de_id)
-    con.send(string_de_ids.encode())
+    string_de_ids = str(lista_de_id)
+    con.send((string_de_ids+"\n").encode())
 
 
 cont=0;
 while True :
     host = ''
-    port = 7208+cont
+    port = 7200+cont
     addr = (host, port)
     serv_socket = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
     serv_socket.setsockopt (socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
