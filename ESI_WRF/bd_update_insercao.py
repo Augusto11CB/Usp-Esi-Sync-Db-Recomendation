@@ -7,7 +7,7 @@ class Acesso_bd_updates_insercoes():
     global cur
 
     def __init__(self):
-        self.conn = psycopg2.connect("dbname=esifr user=postgres password=6494 host=localhost")
+        self.conn = psycopg2.connect("dbname=esifr user=postgres password=erudia host=localhost")
         self.cur = self.conn.cursor()
 
     def incrementa_visualizacao(self, id_produto):
@@ -48,10 +48,12 @@ class Acesso_bd_updates_insercoes_queries():
         return query
 
     def inserirProduto(self, idProduto, nome, categoria, preco, arraysTAG, textos):
+        print(textos)
         query = 'insert into produto (idProduto, nome, categoria, preco) VALUES '
         query += '(\''+str(idProduto)+'\',\''+nome+'\',\''+categoria+'\',\''+str(preco)+'\');\n'
         query += 'insert into tag (idProduto, tag_texto, arrayTAG) VALUES'
         for t, a in zip(textos, arraysTAG):
+            print(t)
             query += '(\'' + str(idProduto) + '\',\'' + t + '\','
             vetor_guardar = '\'{' + ','.join(str(d) for d in a) + '}\''
             query += vetor_guardar + '),'

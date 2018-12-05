@@ -7,7 +7,7 @@ class AcessaBD():
     global cur
 
     def __init__(self):
-        self.conn = psycopg2.connect("dbname=esifr user=postgres password=6494 host=localhost")
+        self.conn = psycopg2.connect("dbname=esifr user=postgres password=erudia host=localhost")
         self.cur = self.conn.cursor()
 
     def ordene_menor_preco(self, lista):

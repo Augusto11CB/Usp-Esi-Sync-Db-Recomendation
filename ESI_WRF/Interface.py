@@ -8,6 +8,7 @@ from bd_update_insercao import Acesso_bd_updates_insercoes
 from bd_update_insercao import Acesso_bd_updates_insercoes_queries
 from corretor import Corretor
 import re
+from bd_relatorios import AcessaBD_relatorios
 from Busca import Busca
 
 
@@ -19,7 +20,7 @@ class Interface:
 
     def __init__(self):
         self.stopwords = nltk.corpus.stopwords.words('portuguese')
-        self.representacao = Representacao.instance()
+        # self.representacao = Representacao.instance()
         self.corretor = Corretor()
         self.pesquisa = Pesquisa()
 
@@ -34,7 +35,6 @@ class Interface:
 
     # def nova_busca (self):
     #     return Busca()
-
 
 
     def _representacao(self, busca):
@@ -59,9 +59,6 @@ class Interface:
 
         return ids
 
-    # relatorios
-    def retorne_buscas_n_dias(self, dias):
-        return AcessaBD_relatorios().devolva_mais_pesquisados_n_dias(dias)
 
     # produto
 
@@ -71,8 +68,9 @@ class Interface:
         queryDeAtualizacao = 'begin;\n'
 
         for insercao in insert_dict:
+            print([self.corretor.corrige(t) for t in insercao["tags_log"]])
             queryDeAtualizacao += ac.inserirProduto(insercao["id_produto"], insercao["nome"],
-                            insercao["categoria_log"],insercao["preco"],[r.devolveVetorArmazena(self.corretor.corrige(t)) for t in insercao["tags_log"]] ,insercao["tags_log"])
+                            insercao["categoria_log"],insercao["preco"],[r.devolveVetorArmazena(self.corretor.corrige(t)) for t in insercao["tags_log"]] ,self.corretor.corrige(insercao["tags_log"]))
         for atualizacao in update_dict:
             if atualizacao["nome"]:
                 queryDeAtualizacao += ac.atualizeProdutoNome(atualizacao["id_produto"], atualizacao["nome"])
@@ -82,7 +80,7 @@ class Interface:
                 queryDeAtualizacao += ac.atualizeProdutoPreco(atualizacao["id_produto"], atualizacao["preco"])
 
             if atualizacao["tags_log"]:
-                queryDeAtualizacao += ac.atualizeProdutoTags(atualizacao["id_produto"], atualizacao["tags_log"],
+                queryDeAtualizacao += ac.atualizeProdutoTags(atualizacao["id_produto"], self.corretor.corrige(atualizacao["tags_log"]),
                                                              [r.devolveVetorArmazena(self.corretor.corrige(t)) for t in atualizacao["tags_log"]])
 
         for id_p in delete_list:
@@ -90,31 +88,13 @@ class Interface:
 
         queryDeAtualizacao += 'commit;\n'
 
-        print(queryDeAtualizacao)
+        # print(queryDeAtualizacao)
         return Acesso_bd_updates_insercoes().run_query_inserts_updates_deletes(queryDeAtualizacao)
 
 
-
-    # def delete_produto(self, idProduto):
-    #     Acesso_bd_updates_insercoes.delete_produto(idProduto)
-    #
-    # def insere_novo_produto(self, idProduto, nome, categoria, preco, arraysTAG, textos):
-    #     Acesso_bd_updates_insercoes.inserirProduto(idProduto, nome, categoria, preco, arraysTAG, textos)
-
-    # def atualizacaoCurtidas(self, idProduto, qtd_curtidas):
-    #     Acesso_bd_updates_insercoes.atualizacaoCurtidas(idProduto, qtd_curtidas)
-    #
-    # def atualizeProdutoPreco(self, idProduto, preco):
-    #     Acesso_bd_updates_insercoes.atualizeProdutoPreco(idProduto, preco)
-    #
-    # def atualizeProdutoNome(self, idProduto, nome):
-    #     Acesso_bd_updates_insercoes.atualizeProdutoNome(idProduto, nome)
-    #
-    # def atualizeTags(self, idProduto, textos, arraysTAG):
-    #     Acesso_bd_updates_insercoes.atualizeProdutoTags(idProduto, textos, arraysTAG)
-    #
-    # def atualizeCategorias(self, idProduto, categoria):
-    #     Acesso_bd_updates_insercoes.atualizeProdutoCategoria(idProduto, categoria)
+    # relatorios
+    def retorne_buscas_n_dias(self, dias):
+        return AcessaBD_relatorios().devolva_mais_pesquisados_n_dias(dias)
 
     #busca
     def busque_n_relacionados(self, id_cliente=None, id_produto=None, n=5):
@@ -132,13 +112,13 @@ class Interface:
 
 
     def retorne_sugestoes(self, caixa_busca):
-        t =self.corretor.corrige(caixa_busca.lower().split())
+        # t =self.corretor.corrige(caixa_busca.lower().split())
         # print(' '.join(t))
-        return AcessaBD().busca_sugestoes(' '.join(t))
+        return AcessaBD().busca_sugestoes(caixa_busca.lower())
 
     def busque(self, busca):
         if busca.busca:
-            Acesso_bd_updates_insercoes().inserirBusca(busca.id_cliente, busca.busca)
+            Acesso_bd_updates_insercoes().inserirBusca(busca.id_cliente, busca.busca.lower())
         return self._devolveProdutos(busca.busca, busca.min_price, busca.max_price, busca.categoria, busca.ordenacao)
 
     def _add_visualizacao(self, idProduto, idCliente):

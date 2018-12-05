@@ -4,6 +4,11 @@ import psycopg2
 from decimal import Decimal
 import numpy as np
 import random
+from corretor import Corretor
+
+print(Corretor().corrige(words=["inaninação"]))
+
+
 # X = [[0,0], [1,1], [5,5], [-2,-2], [10,10]]
 # Y = [[Decimal(0),Decimal(0)],[Decimal(6),Decimal(6)]]
 
@@ -12,13 +17,13 @@ import sys
 # sys.path.append('/home/maxtelll/PycharmProjects/ic/facets')
 #
 #
-conn = psycopg2.connect("dbname=esifr user=postgres password=6494 host=localhost")
-cur = conn.cursor()
+# conn = psycopg2.connect("dbname=esifr user=postgres password=Alphabet@6494 host=localhost")
+# cur = conn.cursor()
 #
-cur.execute('select idproduto from produto where idproduto in %s order by preco;', ( tuple([1,5,2,3]),))
-resp = cur.fetchall()
-ids = [i[0] for i in resp]
-print(ids)
+# cur.execute('select idproduto from produto where idproduto in %s order by preco;', ( tuple([1,5,2,3]),))
+# resp = cur.fetchall()
+# ids = [i[0] for i in resp]
+# print(ids)
 # print(nome)
 # print(np.array(tag))
 a = [1,1]
@@ -130,22 +135,22 @@ from bd_acesso_busca_recomendacoes import AcessaBD
 
 # print(a.busque_n_relacionados(5,40))
 insercoes = []
-# i1 = {
-#     "categoria_log": "camiseta",
-#     "id_log": 8,
-#     "id_produto":1008,
-#     "nome": "camiseta branca regata",
-#     "preco": 99.95,
-#     "tags_log": [
-#       "camiseta","estilosu", "genuino"
-#     ],
-#     "type_log": "INSERT"
-#   }
-# insercoes.append(i1)
+i1 = {
+    "categoria_log": "camiseta",
+    "id_log": 8,
+    "id_produto":3005,
+    "nome": "camiseta branca regata",
+    "preco": 19.95,
+    "tags_log": [
+      "camisetu","estilosu"
+    ],
+    "type_log": "INSERT"
+  }
+insercoes.append(i1)
 # i2 = {
 #     "categoria_log": "calça",
 #     "id_log": 8,
-#     "id_produto":1006,
+#     "id_produto":3001,
 #     "nome": "calça jeans",
 #     "preco": 120.00,
 #     "tags_log": [
@@ -154,11 +159,11 @@ insercoes = []
 #     "type_log": "INSERT"
 #   }
 # insercoes.append(i2)
-#
+# #
 # i3 = {
 #     "categoria_log": "calça",
 #     "id_log": 8,
-#     "id_produto":1007,
+#     "id_produto":3002,
 #     "nome": "calça social",
 #     "preco": 99.95,
 #     "tags_log": [
@@ -168,21 +173,22 @@ insercoes = []
 #   }
 # insercoes.append(i3)
 #
-# atualizacoes = []
-# #  120 | 16 | carteira de couro preta | acessórios | 21.44, camiseta, verão, escritório
-# a1 = {
-#     "categoria_log": "acessórios",
-#     "id_log": 8,
-#     "id_produto":120,
-#     "nome": "carteira de couro decorada",
-#     "preco": 50.00,
-#     "tags_log": [
-#       "social","escritório", "masculina","estiloso", "genuino"
-#     ],
-#     "type_log": "UPDATE"
-#   }
-# atualizacoes.append(a1)
-#   # 632 | 14 | sapato masculino | calçado | 74.89, viagem, moderno, verão
+atualizacoes = []
+#  120 | 16 | tênis | calçado | 62.69,azul,mola,calçado,nova
+
+a1 = {
+    "categoria_log": "",
+    "id_log": 8,
+    "id_produto":120,
+    "nome": "",
+    "preco": '',
+    "tags_log": [
+      "corroda","confortivel", "origimal"
+    ],
+    "type_log": "UPDATE"
+  }
+atualizacoes.append(a1)
+  # 632 | 14 | sapato masculino | calçado | 74.89, viagem, moderno, verão
 # a2 = {
 #     "categoria_log": "",
 #     "id_log": 8,
@@ -208,17 +214,21 @@ insercoes = []
 #   }
 # atualizacoes.append(a3)
 #
-# delete_list = ['20','30','62']
+delete_list = ['20','30','62']
 # print("carregou")
 a = Interface()
 sugestoes = ['sapat', 'calça', 'camiseta', 'couro','blusa', 'jeans','caqui','vermelha','carteira','camiseta','bolsa']
 inicial = time.time()
+
+print(a.retorne_sugestoes('cou'))
+
 # for _ in range(1000):
 #     print(a.retorne_sugestoes(random.choice(sugestoes)))
 
-print(time.time()-inicial)
 # t = a.realiza_operacoes_atualizacao_bd(insercoes, atualizacoes, delete_list)
 # print(t)
+
+# print(time.time()-inicial)
 # b = Busca()
 # b.atribui_ordenacao('preco')
 # b.atribui_busca('estilo bermuds vdauvdsau verão')
@@ -265,6 +275,13 @@ print(time.time()-inicial)
 
 from random import randint
 import random
+
+# qtd, ids = a.retorne_buscas_n_dias(2)
+# print(qtd)
+# print(ids)
+
+# print(a[100])
+
 # print('inicio')
 import threading
 
@@ -303,9 +320,18 @@ categoria = {
 'calçado':'tênis,tênis corrida,tênis com amortecedor,mola,amortecedor,confortável,preta,branca,cinza,azul,esporte,corrida,academia,exercício,camisa preta chefe'
 }
 
+# branco
+#  chefe
+#  negócios
+#  branca
+#  listrada
+#  roupa social
+#  florido
 
-print(a.busque_n_relacionados(id_produto=733))
-print('recomendacoes')
+
+
+# print(a.busque_n_relacionados(id_produto=1235))
+# print('recomendacoes')
 # print(a.devolveNprodutosRecomendados(5, 10))
 # print(a.devolveNprodutosRecomendados(20, 10))
 # print(a.devolveNprodutosRecomendados(80, 2))
@@ -326,33 +352,46 @@ print('recomendacoes')
 # a=[1]
 # print(a[10])
 
+
+b = Busca()
+b.atribui_categoria('blusa')
+b.atribui_busca('blusa preta')
+b.atribui_ordenacao('maior_preco')
+# else:
+#     b.atribui_valor_maximo(100)
+    # b.atribui_valor_minimo(5)
+# # print(id(b))
+
+# print(a.busque(b))
+
+
 inicial = time.time()
-for _ in range(100):
-    b = Busca()
-    # b.atribui_ordenacao('preco')
-    cat = random.choice(list(categoria.keys()))
-    digitado = random.choice(categoria[cat].split(','))
-    # print(digitado)
-    b.atribui_busca(digitado)
-    if random.random() > 0.7:
-        b.atribui_categoria(cat)
-    if random.random() > 0.6:
-        b.atribui_ordenacao(random.choice(['menor_preco', 'maior_preco','popularidade']))
-    if random.random() > 0.2:
-        b.atribui_id(randint(0, 500))
-    if random.random() > 0.6:
-        b.atribui_valor_maximo(90)
-    elif random.random() > 0.6:
-        b.atribui_valor_minimo(10)
-    # else:
-    #     b.atribui_valor_maximo(100)
-        # b.atribui_valor_minimo(5)
-    # # print(id(b))
+# for _ in range(100):
+#     b = Busca()
+#     # b.atribui_ordenacao('preco')
+#     cat = random.choice(list(categoria.keys()))
+#     digitado = random.choice(categoria[cat].split(','))
+#     # print(digitado)
+#     b.atribui_busca(digitado)
+#     if random.random() > 0.7:
+#         b.atribui_categoria(cat)
+#     if random.random() > 0.6:
+#         b.atribui_ordenacao(random.choice(['menor_preco', 'maior_preco','popularidade']))
+#     if random.random() > 0.2:
+#         b.atribui_id(randint(0, 500))
+#     if random.random() > 0.6:
+#         b.atribui_valor_maximo(90)
+#     elif random.random() > 0.6:
+#         b.atribui_valor_minimo(10)
+#     # else:
+#     #     b.atribui_valor_maximo(100)
+#         # b.atribui_valor_minimo(5)
+#     # # print(id(b))
+#
+#     print(len(a.busque(b)))
 
-    # print(len(a.busque(b)))
-
-print(time.time()-inicial)
-print('foi esse')
+# print(time.time()-inicial)
+# print('foi esse')
 
 
 # print(time.time()-ti)
@@ -363,7 +402,7 @@ print('foi esse')
 # print('recomendacoes')
 # print(a.devolveNprodutosRecomendados(5, 10))
 # print(a.devolveNprodutosRecomendados(20, 10))
-# print(a.devolveNprodutosRecomendados(80, 2))
+# print(a.devolveNprodutosRecomendados(800000, 10))
 # print(a.devolveRecomendacaoPaginaInicial(10))
 
 # print(len(i.busque(b)))
